@@ -102,7 +102,11 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 <div class="section-head"><h2>About this archive</h2></div>
 <p class="hero-copy">An independent catalogue documenting KiD's work across solo releases, features, production and project appearances. Built as an archive, not a playlist.</p>
 </section>
-<footer><span>KiD. — THE ARCHiVE</span><span>EST. 2024 · <span class="red">WEIRD RECORDS</span></span></footer>
+<section id="label">
+<div class="section-head"><h2>Weird Records</h2><p>INDEPENDENT LABEL</p></div>
+<p class="hero-copy">Weird Records is KiD's independent label, created as a home for KiD's music and creative work.</p>
+</section>
+<footer><span>KiD. — THE ARCHiVE</span><a class="red" href="#label" style="text-decoration:none">©Weird Records 2026</a></footer>
 </div>
 <script>
 const entries = [
@@ -140,7 +144,7 @@ const entries = [
 {date:"03.10.26",title:"DEFENESTRATiON (Instrumentals)",artist:"KiD",type:"A"},
 {date:"09.10.26",title:"No Flowers",artist:"boredomboy*",type:"F"},
 {date:"14.10.26",title:"My_Trademark",artist:"Pegasus Records",type:"F"},
-{date:"20.11.26",title:"Bring Me In",artist:"UNKN0WN",type:"P",upcoming:true}
+{date:"20.11.26",title:"Bring Me In",artist:"UNKN0WN",type:"P"}
 ];
 const label={F:"FEATURE",P:"PRODUCED",MS:"MY SONG",M:"MIXTAPE",A:"ALBUM"};
 const list=document.getElementById('catalogue-list');
