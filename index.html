@@ -102,11 +102,7 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 <div class="section-head"><h2>About this archive</h2></div>
 <p class="hero-copy">An independent catalogue documenting KiD's work across solo releases, features, production and project appearances. Built as an archive, not a playlist.</p>
 </section>
-<section id="label">
-<div class="section-head"><h2>Weird Records</h2><p>INDEPENDENT LABEL</p></div>
-<p class="hero-copy">Weird Records is KiD's independent label, created as a home for KiD's music and creative work.</p>
-</section>
-<footer><span>KiD. — THE ARCHiVE</span><a class="red" href="#label" style="text-decoration:none">©Weird Records 2026</a></footer>
+<footer><span>KiD. — THE ARCHiVE</span><a class="red" href="label.html" style="text-decoration:none">©Weird Records 2026</a></footer>
 </div>
 <script>
 const entries = [
@@ -155,7 +151,8 @@ function render(){
  const filtered=entries.filter(e=>{
   const matchType=active==='ALL'||(active==='PROJECT'&&(e.type==='M'||e.type==='A'))||e.type===active;
   const hay=[e.title,e.artist,e.date,label[e.type]].join(' ').toLowerCase();
-  return matchType&&hay.includes(q);
+  const trackMatch=!!q&&Array.isArray(e.tracks)&&e.tracks.some(name=>name.toLowerCase().includes(q));
+  return matchType&&(hay.includes(q)||trackMatch);
  });
  list.innerHTML='';
  if(!filtered.length){list.innerHTML='<div class="empty">NO MATCHES FOUND.</div>';return;}
@@ -173,7 +170,18 @@ function render(){
   const tag=document.createElement('span');tag.className='tag '+(['A','M'].includes(e.type)?'album':'');tag.textContent=label[e.type];tags.append(tag);
   if(e.tracks){const t=document.createElement('span');t.className='tag';t.textContent=e.tracks.length+' TRACKS';tags.append(t);}
   entry.append(date,info,tags);row.append(entry);
-  if(e.tracks){const tracks=document.createElement('div');tracks.className='tracklist';e.tracks.forEach((name,i)=>{const item=document.createElement('div');item.className='track';const b=document.createElement('b');b.textContent=String(i+1).padStart(2,'0')+' / ';item.append(b,document.createTextNode(name));tracks.append(item)});row.append(tracks);}
+  if(e.tracks){
+   const tracks=document.createElement('div');tracks.className='tracklist';
+   const matchingTracks=q&&e.tracks.some(name=>name.toLowerCase().includes(q));
+   if(matchingTracks)row.open=true;
+   e.tracks.forEach((name,i)=>{
+    if(matchingTracks&&!name.toLowerCase().includes(q))return;
+    const item=document.createElement('div');item.className='track';
+    const b=document.createElement('b');b.textContent=String(i+1).padStart(2,'0')+' / ';
+    item.append(b,document.createTextNode(name));tracks.append(item);
+   });
+   row.append(tracks);
+  }
   list.append(row);
  });
 }
