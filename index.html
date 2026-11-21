@@ -191,8 +191,15 @@ const label={F:"FEATURE",P:"PRODUCED",MS:"MY SONG",M:"MIXTAPE",A:"ALBUM"};
 const list=document.getElementById('catalogue-list');
 const search=document.getElementById('search');
 let active='ALL', activeYear='ALL';
-const yearOf=e=>{const m=e.date.match(/\d{2}\.(\d{2})\.(\d{2})/);return m?'20'+m[3]:'Unknown'};
-const dateKey=e=>{const m=e.date.match(/(\d{2})\.(\d{2})\.(\d{2})/);return m?Number('20'+m[3])*10000+Number(m[2])*100+Number(m[1]):0};
+const dateParts=e=>{
+ const m=String(e.date).match(/(\d{1,2})\.(\d{1,2})\.(\d{2}|\d{4})/);
+ if(!m)return null;
+ let year=Number(m[3]);
+ if(year<100)year+=2000;
+ return {day:Number(m[1]),month:Number(m[2]),year};
+};
+const yearOf=e=>{const d=dateParts(e);return d?String(d.year):'Unknown'};
+const dateKey=e=>{const d=dateParts(e);return d?d.year*10000+d.month*100+d.day:0};
 function showDetail(e){
  const panel=document.getElementById('detail-panel');
  const tracks=e.tracks||[];
