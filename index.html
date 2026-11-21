@@ -58,7 +58,34 @@ details.project summary::-webkit-details-marker{display:none}
 .note{font:11px 'DM Mono',monospace;color:var(--muted);line-height:1.6;margin:20px 0 60px}
 footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify-content:space-between;gap:20px;font:10px 'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
 .red{color:var(--red)}
-@media(max-width:700px){.nav{gap:12px}.nav a{font-size:10px}.stamp{width:92px;height:92px;top:35px;right:0;font-size:12px}.hero{padding-top:65px}.hero-copy{max-width:75%}.entry{grid-template-columns:64px 1fr;gap:10px}.tags{grid-column:2;justify-content:flex-start}.project summary:after{display:none}.tracklist{padding:0 12px 18px 76px;grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.stats{max-width:none}.stat{padding:12px}.stat strong{font-size:28px}}
+.extra-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 30px}
+.extra-card{border:1px solid var(--line);padding:15px;background:rgba(238,230,211,.025)}
+.extra-card strong{display:block;font:30px Anton,sans-serif;color:var(--yellow)}
+.extra-card small{font:10px 'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.year-row{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}
+.year-btn{border:1px solid var(--line);background:transparent;color:var(--muted);padding:8px 12px;font:11px 'DM Mono',monospace;cursor:pointer}
+.year-btn.active,.year-btn:hover{background:var(--red);border-color:var(--red);color:var(--paper)}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.action-btn{border:1px solid var(--yellow);background:transparent;color:var(--yellow);padding:10px 13px;font:11px 'DM Mono',monospace;cursor:pointer}
+.action-btn:hover{background:var(--yellow);color:var(--ink)}
+.artist-link,.title-link{background:none;border:0;color:inherit;padding:0;text-align:left;cursor:pointer;font:inherit}
+.artist-link{color:var(--muted);font-size:12px;margin-top:5px}
+.artist-link:hover,.title-link:hover{color:var(--yellow);text-decoration:underline}
+.detail-panel{display:none;border:1px solid var(--red);padding:18px;margin:18px 0;background:#1d1b18}
+.detail-panel.visible{display:block}
+.detail-top{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.detail-close{border:1px solid var(--line);background:none;color:var(--paper);padding:5px 9px;cursor:pointer}
+.detail-meta{color:var(--muted);font:11px 'DM Mono',monospace;line-height:1.8;margin:12px 0}
+.detail-tracks{columns:2;font-size:12px;line-height:1.9;color:#c5baa5}
+.timeline{border-left:1px solid var(--red);margin:22px 0 35px 8px;padding-left:22px}
+.timeline-year{font:22px Anton,sans-serif;color:var(--yellow);margin:18px 0 8px}
+.timeline-item{font-size:12px;color:#c5baa5;padding:5px 0}
+.timeline-item b{color:var(--paper)}
+.recent-list{border-top:1px solid var(--line)}
+.recent-item{display:flex;justify-content:space-between;gap:14px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:12px}
+.recent-item span:last-child{color:var(--muted);font:10px 'DM Mono',monospace}
+
+@media(max-width:700px){.extra-grid{grid-template-columns:repeat(2,1fr)}.detail-tracks{columns:1}.recent-item{flex-direction:column;gap:4px}.nav{gap:12px}.nav a{font-size:10px}.stamp{width:92px;height:92px;top:35px;right:0;font-size:12px}.hero{padding-top:65px}.hero-copy{max-width:75%}.entry{grid-template-columns:64px 1fr;gap:10px}.tags{grid-column:2;justify-content:flex-start}.project summary:after{display:none}.tracklist{padding:0 12px 18px 76px;grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.stats{max-width:none}.stat{padding:12px}.stat strong{font-size:28px}}
 @media(max-width:420px){.wrap{width:calc(100% - 24px)}.nav{gap:8px}.brand{font-size:25px}.hero-copy{max-width:100%;padding-right:5px}.stamp{opacity:.22}.stat small{font-size:8px}}
 </style>
 </head>
@@ -66,7 +93,7 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 <div class="wrap">
 <header class="topbar">
 <a class="brand" href="#">KiD.</a>
-<nav class="nav"><a href="#catalogue">Catalogue</a><a href="#projects">Projects</a><a href="#about">About</a></nav>
+<nav class="nav"><a href="#catalogue">Catalogue</a><a href="#credits">Credits</a><a href="#timeline">Timeline</a><a href="#about">About</a></nav>
 </header>
 <section class="hero">
 <div class="kicker">Independent artist · producer · collaborator</div>
@@ -89,10 +116,28 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 <button class="filter" data-filter="P">PRODUCED</button>
 <button class="filter" data-filter="F">FEATURES</button>
 <button class="filter" data-filter="PROJECT">PROJECTS</button>
+<button class="filter" data-filter="P">PRODUCTION</button>
 </div>
+<div class="year-row" id="year-filters"></div>
+<div class="action-row"><button class="action-btn" id="random-entry">↗ RANDOM ENTRY</button><button class="action-btn" id="show-recent">RECENTLY ADDED</button></div>
+<div class="detail-panel" id="detail-panel" aria-live="polite"></div>
 </div>
 <div class="catalogue" id="catalogue-list"></div>
 <p class="note">* Dates are shown as supplied. Where two dates were listed, both are retained. Album and mixtape tracklists expand when selected.</p>
+</section>
+<section id="credits">
+<div class="section-head"><h2>Credit breakdown</h2><p>THE WORK SO FAR</p></div>
+<div class="extra-grid" id="credit-breakdown"></div>
+<div class="section-head"><h2>Artist index</h2><p>COLLABORATORS & CLIENTS</p></div>
+<div class="filters" id="artist-index"></div>
+<div class="section-head"><h2>Production discography</h2><p>EVERY PRODUCTION CREDIT</p></div>
+<div class="catalogue" id="production-list"></div>
+<div class="section-head"><h2>Recently added</h2><p>LATEST CATALOGUE ENTRIES</p></div>
+<div class="recent-list" id="recent-list"></div>
+</section>
+<section id="timeline">
+<div class="section-head"><h2>Discography timeline</h2><p>2024 — 2026</p></div>
+<div class="timeline" id="timeline-list"></div>
 </section>
 <section id="projects">
 <div class="section-head"><h2>Project files</h2><p>KiD RELEASES</p></div>
@@ -145,26 +190,53 @@ const entries = [
 const label={F:"FEATURE",P:"PRODUCED",MS:"MY SONG",M:"MIXTAPE",A:"ALBUM"};
 const list=document.getElementById('catalogue-list');
 const search=document.getElementById('search');
-let active='ALL';
+let active='ALL', activeYear='ALL';
+const yearOf=e=>{const m=e.date.match(/\d{2}\.(\d{2})\.(\d{2})/);return m?'20'+m[3]:'Unknown'};
+const dateKey=e=>{const m=e.date.match(/(\d{2})\.(\d{2})\.(\d{2})/);return m?Number('20'+m[3])*10000+Number(m[2])*100+Number(m[1]):0};
+function showDetail(e){
+ const panel=document.getElementById('detail-panel');
+ const tracks=e.tracks||[];
+ panel.innerHTML='';
+ const top=document.createElement('div');top.className='detail-top';
+ const heading=document.createElement('h2');heading.textContent=e.title;
+ const close=document.createElement('button');close.className='detail-close';close.textContent='CLOSE';close.onclick=()=>panel.classList.remove('visible');
+ top.append(heading,close);panel.append(top);
+ const meta=document.createElement('div');meta.className='detail-meta';
+ meta.textContent='DATE: '+e.date+'   /   ARTIST: '+e.artist+'   /   CREDIT: '+label[e.type];
+ panel.append(meta);
+ if(tracks.length){const sub=document.createElement('p');sub.textContent='PROJECT TRACKLIST';sub.className='kicker';panel.append(sub);
+ const ol=document.createElement('div');ol.className='detail-tracks';tracks.forEach((t,i)=>{const line=document.createElement('div');line.textContent=String(i+1).padStart(2,'0')+' / '+t;ol.append(line)});panel.append(ol);}
+ panel.classList.add('visible');panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function showArtist(name){
+ const matches=entries.filter(e=>e.artist.toLowerCase()===name.toLowerCase()||e.artist.toLowerCase().includes(name.toLowerCase()));
+ const panel=document.getElementById('detail-panel');panel.innerHTML='';
+ const top=document.createElement('div');top.className='detail-top';
+ const heading=document.createElement('h2');heading.textContent=name;
+ const close=document.createElement('button');close.className='detail-close';close.textContent='CLOSE';close.onclick=()=>panel.classList.remove('visible');
+ top.append(heading,close);panel.append(top);
+ const meta=document.createElement('div');meta.className='detail-meta';meta.textContent=matches.length+' CATALOGUE ENTRIES';panel.append(meta);
+ matches.forEach(e=>{const line=document.createElement('div');line.className='recent-item';const a=document.createElement('button');a.className='title-link';a.textContent=e.title;a.onclick=()=>showDetail(e);const b=document.createElement('span');b.textContent=e.date+' · '+label[e.type];line.append(a,b);panel.append(line)});
+ panel.classList.add('visible');panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 function render(){
  const q=search.value.toLowerCase().trim();
  const filtered=entries.filter(e=>{
   const matchType=active==='ALL'||(active==='PROJECT'&&(e.type==='M'||e.type==='A'))||e.type===active;
   const hay=[e.title,e.artist,e.date,label[e.type]].join(' ').toLowerCase();
   const trackMatch=!!q&&Array.isArray(e.tracks)&&e.tracks.some(name=>name.toLowerCase().includes(q));
-  return matchType&&(hay.includes(q)||trackMatch);
+  return matchType&&(activeYear==='ALL'||yearOf(e)===activeYear)&&(hay.includes(q)||trackMatch);
  });
  list.innerHTML='';
  if(!filtered.length){list.innerHTML='<div class="empty">NO MATCHES FOUND.</div>';return;}
  filtered.forEach(e=>{
   const row=document.createElement(e.tracks?'details':'div');
   if(e.tracks)row.className='project';
-  const entry=document.createElement(e.tracks?'summary':'div');
-  entry.className='entry';
+  const entry=document.createElement(e.tracks?'summary':'div');entry.className='entry';
   const date=document.createElement('div');date.className='date';date.textContent=e.date;
   const info=document.createElement('div');
-  const title=document.createElement('div');title.className='entry-title';title.textContent=e.title+(e.upcoming?' · UPCOMING':'');
-  const artist=document.createElement('div');artist.className='entry-artist';artist.textContent=e.artist;
+  const title=document.createElement('button');title.className='title-link entry-title';title.textContent=e.title+(e.upcoming?' · UPCOMING':'');title.onclick=ev=>{ev.preventDefault();showDetail(e)};
+  const artist=document.createElement('button');artist.className='artist-link';artist.textContent=e.artist;artist.onclick=ev=>{ev.preventDefault();showArtist(e.artist)};
   info.append(title,artist);
   const tags=document.createElement('div');tags.className='tags';
   const tag=document.createElement('span');tag.className='tag '+(['A','M'].includes(e.type)?'album':'');tag.textContent=label[e.type];tags.append(tag);
@@ -174,19 +246,35 @@ function render(){
    const tracks=document.createElement('div');tracks.className='tracklist';
    const matchingTracks=q&&e.tracks.some(name=>name.toLowerCase().includes(q));
    if(matchingTracks)row.open=true;
-   e.tracks.forEach((name,i)=>{
-    if(matchingTracks&&!name.toLowerCase().includes(q))return;
-    const item=document.createElement('div');item.className='track';
-    const b=document.createElement('b');b.textContent=String(i+1).padStart(2,'0')+' / ';
-    item.append(b,document.createTextNode(name));tracks.append(item);
-   });
-   row.append(tracks);
+   e.tracks.forEach((name,i)=>{if(matchingTracks&&!name.toLowerCase().includes(q))return;
+    const item=document.createElement('div');item.className='track';const b=document.createElement('b');b.textContent=String(i+1).padStart(2,'0')+' / ';item.append(b,document.createTextNode(name));tracks.append(item);
+   });row.append(tracks);
   }
   list.append(row);
  });
 }
 search.addEventListener('input',render);
-document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.filter.active').classList.remove('active');btn.classList.add('active');active=btn.dataset.filter;render()}));
+document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.filter.active')?.classList.remove('active');btn.classList.add('active');active=btn.dataset.filter;render()}));
+const years=[...new Set(entries.map(yearOf))].filter(y=>y!=='Unknown').sort();
+const yearWrap=document.getElementById('year-filters');
+['ALL',...years].forEach(y=>{const b=document.createElement('button');b.className='year-btn'+(y==='ALL'?' active':'');b.textContent=y==='ALL'?'ALL YEARS':y;b.onclick=()=>{yearWrap.querySelector('.active')?.classList.remove('active');b.classList.add('active');activeYear=y;render()};yearWrap.append(b)});
+const countTypes=[['MY SONGS','MS'],['PRODUCED','P'],['FEATURES','F'],['PROJECTS','PROJECT']];
+const breakdown=document.getElementById('credit-breakdown');
+countTypes.forEach(([name,type])=>{const count=entries.filter(e=>type==='PROJECT'?['A','M'].includes(e.type):e.type===type).length;const card=document.createElement('div');card.className='extra-card';const n=document.createElement('strong');n.textContent=count;const s=document.createElement('small');s.textContent=name;card.append(n,s);breakdown.append(card)});
+const artists=[...new Set(entries.map(e=>e.artist))].sort((a,b)=>a.localeCompare(b));
+const artistIndex=document.getElementById('artist-index');
+artists.forEach(name=>{const b=document.createElement('button');b.className='filter';b.textContent=name;b.onclick=()=>showArtist(name);artistIndex.append(b)});
+const production=document.getElementById('production-list');
+entries.filter(e=>e.type==='P').forEach(e=>{const line=document.createElement('div');line.className='entry';const d=document.createElement('div');d.className='date';d.textContent=e.date;const info=document.createElement('div');const t=document.createElement('button');t.className='title-link entry-title';t.textContent=e.title;t.onclick=()=>showDetail(e);const a=document.createElement('div');a.className='entry-artist';a.textContent=e.artist;info.append(t,a);const tag=document.createElement('span');tag.className='tag';tag.textContent='PRODUCED';line.append(d,info,tag);production.append(line)});
+const recent=[...entries].sort((a,b)=>dateKey(b)-dateKey(a)).slice(0,5);
+const recentList=document.getElementById('recent-list');
+recent.forEach(e=>{const line=document.createElement('div');line.className='recent-item';const t=document.createElement('button');t.className='title-link';t.textContent=e.title;t.onclick=()=>showDetail(e);const d=document.createElement('span');d.textContent=e.date+' · '+label[e.type];line.append(t,d);recentList.append(line)});
+const timeline=document.getElementById('timeline-list');
+years.forEach(y=>{const heading=document.createElement('div');heading.className='timeline-year';heading.textContent=y;timeline.append(heading);
+ entries.filter(e=>yearOf(e)===y).sort((a,b)=>dateKey(a)-dateKey(b)).forEach(e=>{const item=document.createElement('div');item.className='timeline-item';const b=document.createElement('b');b.textContent=e.title;item.append(b,document.createTextNode(' — '+e.artist+' · '+e.date));timeline.append(item)});
+});
+document.getElementById('random-entry').onclick=()=>{const e=entries[Math.floor(Math.random()*entries.length)];showDetail(e)};
+document.getElementById('show-recent').onclick=()=>document.getElementById('recent-list').scrollIntoView({behavior:'smooth'});
 render();
 </script>
 </body>
