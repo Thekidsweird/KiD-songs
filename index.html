@@ -500,12 +500,12 @@ rankedProducers.forEach(([name,count],i)=>{
  const total=document.createElement('span');total.className='rank-count';total.textContent=count;
  row.append(num,label,track,total);producerRankings.append(row);
 });
-const recent=[...uniqueSongs([...entries].sort((a,b)=>dateKey(b)-dateKey(a)))].slice(0,5);
+const recent=[...uniqueSongs([...allSongs].sort((a,b)=>dateKey(b)-dateKey(a)))].slice(0,5);
 const recentList=document.getElementById('recent-list');
 recent.forEach(e=>{const line=document.createElement('div');line.className='recent-item';const t=document.createElement('button');t.className='title-link';t.textContent=e.title;t.onclick=()=>showDetail(e);const d=document.createElement('span');d.textContent=e.date+' · '+label[e.type];line.append(t,d);recentList.append(line)});
 // Discography map: year-by-year catalogue activity, with each year linking to its filter.
 const discographyMap=document.getElementById('discography-map');
-const yearCounts=years.map(y=>({year:y,count:uniqueSongs(entries.filter(e=>yearOf(e)===y)).length}));
+const yearCounts=years.map(y=>({year:y,count:uniqueSongs(allSongs.filter(e=>yearOf(e)===y)).length}));
 const maxYearCount=Math.max(1,...yearCounts.map(x=>x.count));
 yearCounts.forEach(({year,count})=>{
  const b=document.createElement('button');b.className='map-year';
@@ -517,7 +517,7 @@ yearCounts.forEach(({year,count})=>{
 });
 const timeline=document.getElementById('timeline-list');
 years.forEach(y=>{const heading=document.createElement('div');heading.className='timeline-year';heading.textContent=y;timeline.append(heading);
- uniqueSongs(entries.filter(e=>yearOf(e)===y)).sort((a,b)=>dateKey(a)-dateKey(b)).forEach(e=>{const item=document.createElement('div');item.className='timeline-item';const b=document.createElement('b');b.textContent=e.title;item.append(b,document.createTextNode(' — '+e.artist+' · '+e.date));timeline.append(item)});
+ uniqueSongs(allSongs.filter(e=>yearOf(e)===y)).sort((a,b)=>dateKey(a)-dateKey(b)).forEach(e=>{const item=document.createElement('div');item.className='timeline-item';const b=document.createElement('b');b.textContent=e.title;item.append(b,document.createTextNode(' — '+e.artist+' · '+e.date));timeline.append(item)});
 });
 document.getElementById('random-entry').onclick=()=>{const e=entries[Math.floor(Math.random()*entries.length)];showDetail(e)};
 document.getElementById('show-recent').onclick=()=>document.getElementById('recent-list').scrollIntoView({behavior:'smooth'});
