@@ -330,13 +330,18 @@ function allFeaturedNames(){
  });
  return names;
 }
+function splitProducerNames(value){
+ return String(value||'').split(/\s*&\s*|\s*,\s*/).map(x=>x.trim().replace(/\s*\((?:YT)\)\s*$/i,'').trim()).filter(x=>x&&!/^unknown$/i.test(x));
+}
 function creditedArtists(value){
  const text=String(value||'').trim();
  if(/^kid\s*&\s*eddie$/i.test(text))return ['KiD','Eddie'];
+ if(/^kid\s*&\s*kt007$/i.test(text))return ['KiD','KT007'];
  return text?[text]:[];
 }
 function showArtist(name){
  const matches=entries.filter(e=>creditedArtists(e.artist).some(a=>a.toLowerCase()===name.toLowerCase()));
+ const producedBy=allSongs.filter(e=>splitProducerNames(e.producer).some(a=>a.toLowerCase()===name.toLowerCase()));
  const featuredOn=[];
  entries.forEach(e=>{
   if(e.type==='F'&&name.toLowerCase()==='kid')featuredOn.push({entry:e,title:e.title});
@@ -365,11 +370,15 @@ function showArtist(name){
   const heading=document.createElement('p');heading.className='kicker';heading.textContent='MY CREDITS WITH THIS ARTIST';panel.append(heading);
   matches.forEach(e=>{const line=document.createElement('div');line.className='recent-item';const a=document.createElement('button');a.className='title-link';a.textContent=e.title;a.onclick=()=>showDetail(e);const b=document.createElement('span');b.textContent=e.date+' · '+label[e.type];line.append(a,b);panel.append(line)});
  }
+ if(producedBy.length){
+  const heading=document.createElement('p');heading.className='kicker';heading.textContent='PRODUCTION CREDITS';panel.append(heading);
+  producedBy.forEach(e=>{const line=document.createElement('div');line.className='recent-item';const a=document.createElement('button');a.className='title-link';a.textContent=e.title;a.onclick=()=>showDetail(e);const b=document.createElement('span');b.textContent=e.date+' · PROD. '+e.producer;line.append(a,b);panel.append(line)});
+ }
  if(featuredOn.length){
   const heading=document.createElement('p');heading.className='kicker';heading.textContent='FEATURES THIS ARTIST HAS DONE FOR KiD';panel.append(heading);
   featuredOn.forEach(({entry,title})=>{const line=document.createElement('div');line.className='recent-item';const a=document.createElement('button');a.className='title-link';a.textContent=title;a.onclick=()=>showDetail(entry);const b=document.createElement('span');b.textContent=entry.title===title?entry.date:entry.title+' · '+entry.date;line.append(a,b);panel.append(line)});
  }
- if(!matches.length&&!featuredOn.length){const none=document.createElement('p');none.textContent='No catalogue credits found for this artist yet.';panel.append(none)}
+ if(!matches.length&&!featuredOn.length&&!producedBy.length){const none=document.createElement('p');none.textContent='No catalogue credits found for this artist yet.';panel.append(none)}
  panel.classList.add('visible');panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function render(){
@@ -442,7 +451,7 @@ countTypes.forEach(([name,type])=>{
    :uniqueSongs(allSongs.filter(e=>e.type===type)).length;
  const card=document.createElement('div');card.className='extra-card';const n=document.createElement('strong');n.textContent=count;const s=document.createElement('small');s.textContent=name;card.append(n,s);breakdown.append(card)
 });
-const artists=[...new Set([...entries.flatMap(e=>creditedArtists(e.artist)),...entries.flatMap(e=>(e.tracks||[]).flatMap(t=>typeof t==='string'?[]:creditedArtists(t.artist))),...allFeaturedNames()].filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+const artists=[...new Set([...entries.flatMap(e=>creditedArtists(e.artist)),...entries.flatMap(e=>(e.tracks||[]).flatMap(t=>typeof t==='string'?[]:creditedArtists(t.artist))),...entries.flatMap(e=>splitProducerNames(e.producer)),...allSongs.flatMap(e=>splitProducerNames(e.producer)),...allFeaturedNames()].filter(Boolean))].sort((a,b)=>a.localeCompare(b));
 const artistIndex=document.getElementById('artist-index');
 artists.forEach(name=>{const b=document.createElement('button');b.className='filter';b.textContent=name;b.onclick=()=>showArtist(name);artistIndex.append(b)});
 const production=document.getElementById('production-list');
@@ -474,8 +483,7 @@ const network=document.getElementById('collaboration-network');
 // Producer rankings count unique songs with each named producer credit.
 const producerCounts=new Map();
 allSongs.forEach(song=>{
- String(song.producer||'').split(/\s*&\s*|\s*,\s*/).forEach(raw=>{
-  const name=raw.trim().replace(/\s*\((?:YT)\)\s*$/i,'').trim();
+ splitProducerNames(song.producer).forEach(name=>{
   if(!name||/^unknown$/i.test(name))return;
   producerCounts.set(name,(producerCounts.get(name)||0)+1);
  });
