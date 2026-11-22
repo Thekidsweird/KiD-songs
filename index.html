@@ -88,6 +88,20 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 .recent-list{border-top:1px solid var(--line)}
 .recent-item{display:flex;justify-content:space-between;gap:14px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:12px}
 .recent-item span:last-child{color:var(--muted);font:10px 'DM Mono',monospace}
+.network-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:9px;margin:18px 0 34px}
+.network-card{border:1px solid var(--line);background:rgba(238,230,211,.025);padding:13px;text-align:left;color:var(--paper);cursor:pointer;min-width:0}
+.network-card:hover{border-color:var(--yellow);background:rgba(242,201,76,.07)}
+.network-card strong{display:block;font-size:14px;overflow-wrap:anywhere}
+.network-card small{display:block;color:var(--muted);font:10px 'DM Mono',monospace;margin-top:7px;text-transform:uppercase}
+.rank-list{display:grid;gap:8px;margin:18px 0 35px}
+.rank-row{display:grid;grid-template-columns:32px minmax(100px,190px) 1fr 35px;gap:10px;align-items:center;font:11px 'DM Mono',monospace}
+.rank-num{color:var(--red)}.rank-name{overflow-wrap:anywhere}.rank-track{height:10px;background:#302c25;border:1px solid var(--line)}
+.rank-fill{height:100%;background:var(--yellow)}.rank-count{text-align:right;color:var(--muted)}
+.map-years{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:18px 0 35px}
+.map-year{border:1px solid var(--line);padding:13px;background:rgba(238,230,211,.025);cursor:pointer;color:var(--paper);text-align:left}
+.map-year:hover{border-color:var(--red)}.map-year strong{font:26px Anton,sans-serif;color:var(--yellow);display:block}
+.map-year small{font:10px 'DM Mono',monospace;color:var(--muted)}
+.map-bar{height:5px;background:#302c25;margin-top:12px}.map-bar span{display:block;height:100%;background:var(--red)}
 
 @media(max-width:700px){.extra-grid{grid-template-columns:repeat(2,1fr)}.detail-tracks{columns:1}.recent-item{flex-direction:column;gap:4px}.nav{gap:12px}.nav a{font-size:10px}.stamp{width:92px;height:92px;top:35px;right:0;font-size:12px}.hero{padding-top:65px}.hero-copy{max-width:75%}.entry{grid-template-columns:64px 1fr;gap:10px}.tags{grid-column:2;justify-content:flex-start}.project summary:after{display:none}.tracklist{padding:0 12px 18px 76px;grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.stats{max-width:none}.stat{padding:12px}.stat strong{font-size:28px}}
 @media(max-width:420px){.wrap{width:calc(100% - 24px)}.nav{gap:8px}.brand{font-size:25px}.hero-copy{max-width:100%;padding-right:5px}.stamp{opacity:.22}.stat small{font-size:8px}}
@@ -135,6 +149,10 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 <div class="extra-grid" id="credit-breakdown"></div>
 <div class="section-head"><h2>Artist index</h2><p>COLLABORATORS & CLIENTS</p></div>
 <div class="filters" id="artist-index"></div>
+<div class="section-head"><h2>Collaboration network</h2><p>ARTISTS CONNECTED TO KiD</p></div>
+<div class="network-grid" id="collaboration-network"></div>
+<div class="section-head"><h2>Producer rankings</h2><p>PRODUCERS ACROSS THE CATALOGUE</p></div>
+<div class="rank-list" id="producer-rankings"></div>
 <div class="section-head"><h2>Production discography</h2><p>EVERY PRODUCTION CREDIT</p></div>
 <div class="catalogue" id="production-list"></div>
 <div class="section-head"><h2>Recently added</h2><p>LATEST CATALOGUE ENTRIES</p></div>
@@ -142,6 +160,7 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 </section>
 <section id="timeline">
 <div class="section-head"><h2>Discography timeline</h2><p>2024 — 2026</p></div>
+<div class="map-years" id="discography-map"></div>
 <div class="timeline" id="timeline-list"></div>
 </section>
 <section id="projects">
@@ -432,9 +451,56 @@ uniqueSongs(allSongs.filter(e=>isKiDProducer(e.producer))).forEach(e=>{
  const tag=document.createElement('span');tag.className='tag';tag.textContent='PROD. '+e.producer;
  line.append(d,info,tag);production.append(line)
 });
+// Collaboration network: count catalogue appearances per credited collaborator.
+const collabCounts=new Map();
+const addCollab=(name)=>{name=String(name||'').trim();if(!name||name.toLowerCase()==='kid')return;collabCounts.set(name,(collabCounts.get(name)||0)+1)};
+entries.forEach(e=>{
+ if(e.artist&&e.artist.toLowerCase()!=='kid')addCollab(e.artist);
+ featuredArtists(e.title).forEach(addCollab);
+ (e.tracks||[]).forEach(t=>{const title=typeof t==='string'?t:t.title;featuredArtists(title||'').forEach(addCollab);if(typeof t!=='string'&&t.artist)addCollab(t.artist)});
+});
+const network=document.getElementById('collaboration-network');
+[...collabCounts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).forEach(([name,count])=>{
+ const b=document.createElement('button');b.className='network-card';
+ const strong=document.createElement('strong');strong.textContent=name;
+ const small=document.createElement('small');small.textContent=count+' catalogue connection'+(count===1?'':'s');
+ b.append(strong,small);b.onclick=()=>showArtist(name);network.append(b);
+});
+// Producer rankings count unique songs with each named producer credit.
+const producerCounts=new Map();
+allSongs.forEach(song=>{
+ String(song.producer||'').split(/\s*&\s*|\s*,\s*/).forEach(raw=>{
+  const name=raw.trim().replace(/\s*\((?:YT)\)\s*$/i,'').trim();
+  if(!name||/^unknown$/i.test(name))return;
+  producerCounts.set(name,(producerCounts.get(name)||0)+1);
+ });
+});
+const producerRankings=document.getElementById('producer-rankings');
+const rankedProducers=[...producerCounts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+const maxProducerCount=rankedProducers.length?rankedProducers[0][1]:1;
+rankedProducers.forEach(([name,count],i)=>{
+ const row=document.createElement('div');row.className='rank-row';
+ const num=document.createElement('span');num.className='rank-num';num.textContent=String(i+1).padStart(2,'0');
+ const label=document.createElement('span');label.className='rank-name';label.textContent=name;
+ const track=document.createElement('div');track.className='rank-track';const fill=document.createElement('div');fill.className='rank-fill';fill.style.width=(count/maxProducerCount*100)+'%';track.append(fill);
+ const total=document.createElement('span');total.className='rank-count';total.textContent=count;
+ row.append(num,label,track,total);producerRankings.append(row);
+});
 const recent=[...uniqueSongs([...entries].sort((a,b)=>dateKey(b)-dateKey(a)))].slice(0,5);
 const recentList=document.getElementById('recent-list');
 recent.forEach(e=>{const line=document.createElement('div');line.className='recent-item';const t=document.createElement('button');t.className='title-link';t.textContent=e.title;t.onclick=()=>showDetail(e);const d=document.createElement('span');d.textContent=e.date+' · '+label[e.type];line.append(t,d);recentList.append(line)});
+// Discography map: year-by-year catalogue activity, with each year linking to its filter.
+const discographyMap=document.getElementById('discography-map');
+const yearCounts=years.map(y=>({year:y,count:uniqueSongs(entries.filter(e=>yearOf(e)===y)).length}));
+const maxYearCount=Math.max(1,...yearCounts.map(x=>x.count));
+yearCounts.forEach(({year,count})=>{
+ const b=document.createElement('button');b.className='map-year';
+ const y=document.createElement('strong');y.textContent=year;
+ const small=document.createElement('small');small.textContent=count+' UNIQUE CATALOGUE ENTRIES';
+ const bar=document.createElement('div');bar.className='map-bar';const fill=document.createElement('span');fill.style.width=(count/maxYearCount*100)+'%';bar.append(fill);
+ b.append(y,small,bar);b.onclick=()=>{activeYear=year;yearWrap.querySelector('.active')?.classList.remove('active');const yearButton=[...yearWrap.children].find(x=>x.textContent===year);if(yearButton)yearButton.classList.add('active');active='ALL';document.querySelectorAll('#filters .filter').forEach(x=>x.classList.toggle('active',x.dataset.filter==='ALL'));render();document.getElementById('catalogue').scrollIntoView({behavior:'smooth'});};
+ discographyMap.append(b);
+});
 const timeline=document.getElementById('timeline-list');
 years.forEach(y=>{const heading=document.createElement('div');heading.className='timeline-year';heading.textContent=y;timeline.append(heading);
  uniqueSongs(entries.filter(e=>yearOf(e)===y)).sort((a,b)=>dateKey(a)-dateKey(b)).forEach(e=>{const item=document.createElement('div');item.className='timeline-item';const b=document.createElement('b');b.textContent=e.title;item.append(b,document.createTextNode(' — '+e.artist+' · '+e.date));timeline.append(item)});
