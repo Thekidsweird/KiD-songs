@@ -330,12 +330,17 @@ function allFeaturedNames(){
  });
  return names;
 }
+function creditedArtists(value){
+ const text=String(value||'').trim();
+ if(/^kid\s*&\s*eddie$/i.test(text))return ['KiD','Eddie'];
+ return text?[text]:[];
+}
 function showArtist(name){
- const matches=entries.filter(e=>e.artist.toLowerCase()===name.toLowerCase()||e.artist.toLowerCase().includes(name.toLowerCase()));
+ const matches=entries.filter(e=>creditedArtists(e.artist).some(a=>a.toLowerCase()===name.toLowerCase()));
  const featuredOn=[];
  entries.forEach(e=>{
   if(e.type==='F'&&name.toLowerCase()==='kid')featuredOn.push({entry:e,title:e.title});
-  if(e.artist.toLowerCase()!=='kid')return;
+  if(!creditedArtists(e.artist).some(a=>a.toLowerCase()==='kid'))return;
   if(featuredArtists(e.title).some(n=>n.toLowerCase()===name.toLowerCase())){
    featuredOn.push({entry:e,title:e.title});
   }
@@ -437,7 +442,7 @@ countTypes.forEach(([name,type])=>{
    :uniqueSongs(allSongs.filter(e=>e.type===type)).length;
  const card=document.createElement('div');card.className='extra-card';const n=document.createElement('strong');n.textContent=count;const s=document.createElement('small');s.textContent=name;card.append(n,s);breakdown.append(card)
 });
-const artists=[...new Set([...entries.map(e=>e.artist),...entries.flatMap(e=>(e.tracks||[]).map(t=>typeof t==='string'?'':(t.artist||''))),...allFeaturedNames()].filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+const artists=[...new Set([...entries.flatMap(e=>creditedArtists(e.artist)),...entries.flatMap(e=>(e.tracks||[]).flatMap(t=>typeof t==='string'?[]:creditedArtists(t.artist))),...allFeaturedNames()].filter(Boolean))].sort((a,b)=>a.localeCompare(b));
 const artistIndex=document.getElementById('artist-index');
 artists.forEach(name=>{const b=document.createElement('button');b.className='filter';b.textContent=name;b.onclick=()=>showArtist(name);artistIndex.append(b)});
 const production=document.getElementById('production-list');
@@ -455,9 +460,9 @@ uniqueSongs(allSongs.filter(e=>isKiDProducer(e.producer))).forEach(e=>{
 const collabCounts=new Map();
 const addCollab=(name)=>{name=String(name||'').trim();if(!name||name.toLowerCase()==='kid')return;collabCounts.set(name,(collabCounts.get(name)||0)+1)};
 entries.forEach(e=>{
- if(e.artist&&e.artist.toLowerCase()!=='kid')addCollab(e.artist);
+ creditedArtists(e.artist).forEach(addCollab);
  featuredArtists(e.title).forEach(addCollab);
- (e.tracks||[]).forEach(t=>{const title=typeof t==='string'?t:t.title;featuredArtists(title||'').forEach(addCollab);if(typeof t!=='string'&&t.artist)addCollab(t.artist)});
+ (e.tracks||[]).forEach(t=>{const title=typeof t==='string'?t:t.title;featuredArtists(title||'').forEach(addCollab);if(typeof t!=='string')creditedArtists(t.artist).forEach(addCollab)});
 });
 const network=document.getElementById('collaboration-network');
 [...collabCounts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).forEach(([name,count])=>{
