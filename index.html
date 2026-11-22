@@ -75,6 +75,10 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 .detail-panel.visible{display:block}
 .detail-top{display:flex;justify-content:space-between;gap:12px;align-items:start}
 .detail-close{border:1px solid var(--line);background:none;color:var(--paper);padding:5px 9px;cursor:pointer}
+
+.release-links{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 18px}
+.release-links a{display:inline-block;border:1px solid var(--yellow);color:var(--yellow);padding:8px 11px;text-decoration:none;font:10px 'DM Mono',monospace;text-transform:uppercase}
+.release-links a:hover{background:var(--yellow);color:var(--ink)}
 .detail-meta{color:var(--muted);font:11px 'DM Mono',monospace;line-height:1.8;margin:12px 0}
 .detail-tracks{columns:2;font-size:12px;line-height:1.9;color:#c5baa5}
 .timeline{border-left:1px solid var(--red);margin:22px 0 35px 8px;padding-left:22px}
@@ -152,22 +156,22 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 </div>
 <script>
 const entries = [
-{date:"08.09.24",title:"Let Me Cook (Feat. KiD)",artist:"Eddie",type:"F",producer:"KiD & Eddie"},
-{date:"09.09.24",title:"THE CHRONIC",artist:"Goku Th3 Shakra K.Y.N.G",type:"P",producer:"KiD"},
-{date:"12.09.24",title:"White Mouse",artist:"Goku Th3 Shakra K.Y.N.G",type:"P",producer:"KiD"},
-{date:"14.09.24",title:"Supersonic Speed",artist:"KiD & Eddie",type:"MS",producer:"Eddie"},
-{date:"17.09.24",title:"Golden Gates",artist:"Goku Th3 Shakra K.Y.N.G",type:"F",producer:"KiD"},
-{date:"08.10.24",title:"Crazy",artist:"Goku Th3 Shakra K.Y.N.G",type:"P",producer:"KiD"},
-{date:"27.12.24",title:"REPRESENTATION (Feat. KiD)",artist:"89xgoat",type:"F",producer:"Unknown"},
-{date:"11.02.25",title:"I just want you (Feat. Eddie)",artist:"KiD",type:"MS",producer:"Eddie & KiD"},
-{date:"02.03.25",title:"SHADY X JEEZY X NAS (Feat. KiD)",artist:"Mozart Syndrome",type:"F",producer:"Mozart Syndrome"},
-{date:"15.04.25",title:"This Shit",artist:"KiD",type:"MS",producer:"KiD"},
-{date:"26.05.25",title:"Trust The Process (Feat. KiD)",artist:"Eddie",type:"F",producer:"Burnymadeity (YT)"},
-{date:"20.06.25",title:"JOY WITHIN YOU (Feat. Eddie)",artist:"KiD",type:"MS",producer:"olzoo (YT) & KiD"},
-{date:"19.07.25",title:"Stepping With God (Feat. KiD)",artist:"Eddie",type:"F",producer:"RJ pasin (YT)"},
-{date:"23.07.25",title:"Don't Luv/WDYLM (Feat. KiD)",artist:"Eddie",type:"F",producer:"Bounce kid (YT)"},
-{date:"27.08.25",title:"COME BACK",artist:"KiD",type:"MS",producer:"KiD"},
-{date:"01.09.25",title:"KiD",artist:"KiD",type:"M",tracks:[
+{date:"08.09.24",title:"Let Me Cook (Feat. KiD)",artist:"Eddie",type:"F",producer:"KiD & Eddie",links:{"BandLab": "https://www.bandlab.com/post/f973ce1b-136e-ef11-bdfd-000d3a980db3"}},
+{date:"09.09.24",title:"THE CHRONIC",artist:"Goku Th3 Shakra K.Y.N.G",type:"P",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/29ffee35-cc6e-ef11-bdfd-000d3a980db3"}},
+{date:"12.09.24",title:"White Mouse",artist:"Goku Th3 Shakra K.Y.N.G",type:"P",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/e242870e-5071-ef11-bdfd-000d3a980db3"}},
+{date:"14.09.24",title:"Supersonic Speed",artist:"KiD & Eddie",type:"MS",producer:"Eddie",links:{"BandLab": "https://www.bandlab.com/post/724375b5-e672-ef11-bdfd-000d3a96c7c8"}},
+{date:"17.09.24",title:"Golden Gates",artist:"Goku Th3 Shakra K.Y.N.G",type:"F",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/6c2706bc-8b74-ef11-bdfd-000d3a96c7c8"}},
+{date:"08.10.24",title:"Crazy",artist:"Goku Th3 Shakra K.Y.N.G",type:"P",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/revisions/fd748673-6fdd-ef11-88f6-6045bd3473c0?sharedKey=wJV_tIB_K06-TujMFG1n2Q"}},
+{date:"27.12.24",title:"REPRESENTATION (Feat. KiD)",artist:"89xgoat",type:"F",producer:"Unknown",links:{"BandLab": "https://www.bandlab.com/post/87a95c9e-4cc4-ef11-88cd-6045bd345b20"}},
+{date:"11.02.25",title:"I just want you (Feat. Eddie)",artist:"KiD",type:"MS",producer:"Eddie & KiD",links:{"BandLab": "https://www.bandlab.com/post/f24d614f-d2e7-ef11-88f6-6045bd3473c0"}},
+{date:"02.03.25",title:"SHADY X JEEZY X NAS (Feat. KiD)",artist:"Mozart Syndrome",type:"F",producer:"Mozart Syndrome",links:{"BandLab": "https://www.bandlab.com/post/970648ea-b6f7-ef11-90c9-00224848fea7"}},
+{date:"15.04.25",title:"This Shit",artist:"KiD",type:"MS",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/86529711-471a-f011-aaa7-0022484892d6"}},
+{date:"26.05.25",title:"Trust The Process (Feat. KiD)",artist:"Eddie",type:"F",producer:"Burnymadeity (YT)",links:{"BandLab": "https://www.bandlab.com/post/11882b78-7d3a-f011-a5f1-6045bd2f3017"}},
+{date:"20.06.25",title:"JOY WITHIN YOU (Feat. Eddie)",artist:"KiD",type:"MS",producer:"olzoo (YT) & KiD",links:{"BandLab": "https://www.bandlab.com/post/e9df9b84-1c4e-f011-8f7d-6045bd381261"}},
+{date:"19.07.25",title:"Stepping With God (Feat. KiD)",artist:"Eddie",type:"F",producer:"RJ pasin (YT)",links:{"BandLab": "https://www.bandlab.com/post/57faa1aa-d64c-f011-8f7d-6045bd381261"}},
+{date:"23.07.25",title:"Don't Luv/WDYLM (Feat. KiD)",artist:"Eddie",type:"F",producer:"Bounce kid (YT)",links:{"BandLab": "https://www.bandlab.com/post/111ab2d6-7c50-f011-8f7d-6045bd381261"}},
+{date:"27.08.25",title:"COME BACK",artist:"KiD",type:"MS",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/d22314f8-6983-f011-b480-6045bd35f0e2", "SoundCloud": "https://soundcloud.com/thekidiswired/come-back-3", "YouTube": "https://youtu.be/7Fv8wnOxnvQ"}},
+{date:"01.09.25",title:"KiD",artist:"KiD",type:"M",links:{"BandLab": "https://www.bandlab.com/thekidsweird/albums/dd6c2f40-862b-f011-8b3d-000d3a930edb", "SoundCloud": "https://soundcloud.com/thekidiswired/sets/kid"},tracks:[
 {title:"Public Service Announcement 2025 [Skit]",type:"S",producer:"KiD"},
 {title:"Straight Rappin'",type:"S",producer:"KiD"},
 {title:"COME BACK",type:"S",producer:"KiD"},
@@ -178,8 +182,8 @@ const entries = [
 {title:"This Shit",type:"S",producer:"KiD"},
 {title:"Outro",type:"S",producer:"KiD"}
 ]},
-{date:"16.09.25",title:"The Oracle",artist:"Goku Th3 Shakra K.Y.N.G",type:"P",producer:"KiD"},
-{date:"28.09.25",title:"KiD [EXPANDED EDITION]",artist:"KiD",type:"M",tracks:[
+{date:"16.09.25",title:"The Oracle",artist:"Goku Th3 Shakra K.Y.N.G",type:"P",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/a32d1d8d-e49e-ef11-8474-6045bd375453"}},
+{date:"28.09.25",title:"KiD [EXPANDED EDITION]",artist:"KiD",type:"M",links:{"BandLab": "https://www.bandlab.com/thekidsweird/albums/76b5407a-73e9-f011-8195-0022484794d6"},tracks:[
 {title:"Public Service Announcement 2025 [Skit]",type:"S",producer:"KiD"},
 {title:"Straight Rappin'",type:"S",producer:"KiD"},
 {title:"COME BACK",type:"S",producer:"KiD"},
@@ -196,19 +200,19 @@ const entries = [
 {title:"Straight Rappin' [Trap Remix Instrumental] (Bonus)",type:"S",producer:"KiD"},
 {title:"Outro",type:"S",producer:"KiD"}
 ]},
-{date:"01.11.25",title:"KiD (Instrumentals)",artist:"KiD",type:"M"},
-{date:"06.12.25",title:"BLOW/RAP NAME",artist:"KiD",type:"MS",producer:"KiD"},
-{date:"22.02.26",title:"Forever Young (Feat. KiD)",artist:"Yenchez",type:"F",producer:"Unknown"},
-{date:"08.03.26",title:"Old School (Holl-a-back time)",artist:"KiD",type:"MS",producer:"KiD"},
-{date:"18.04.26",title:"Sociopath (Feat. KiD)",artist:"Kt007",type:"F",producer:"Dr. Dre"},
-{date:"08.06.26",title:"99 Raps (Feat. Supreme Assassin & KiD)",artist:"Prince",type:"F",producer:"Timberland"},
-{date:"11.06.26",title:"Old School (WC26 Stadium Remix)",artist:"KiD",type:"MS",producer:"KiD"},
-{date:"18.07.26",title:"Serious Effect (Feat. KiD)",artist:"Yenchez",type:"F",producer:"Unknown"},
-{date:"23.07.26",title:"Clap Your Hands",artist:"Prince",type:"P",producer:"KiD"},
-{date:"16.08.26",title:"Hell Come Down (Feat. KiD & Prince)",artist:"Supreme Assassin",type:"F",producer:"DJ whoo kid"},
-{date:"1.9.26 / 31.8.26",title:"COMiNG FOR YOUR SPOT",artist:"KiD",type:"MS",producer:"KiD & Eddie"},
-{date:"15.9.26 / 14.9.26",title:"FAST NOW (Feat. boredomboy* & Sona)",artist:"KiD",type:"MS",producer:"KiD"},
-{date:"3.10.26 / 2.10.26",title:"DEFENESTRATiON",artist:"KiD",type:"A",tracks:[
+{date:"01.11.25",title:"KiD (Instrumentals)",artist:"KiD",type:"M",links:{"BandLab": "https://www.bandlab.com/thekidsweird/albums/960f2247-20b7-f011-8194-002248479f57"}},
+{date:"06.12.25",title:"BLOW/RAP NAME",artist:"KiD",type:"MS",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/4b1db6b7-36d2-f011-819b-6045bd3096b1", "YouTube": "https://youtu.be/v7Eg6N2FrK8"}},
+{date:"22.02.26",title:"Forever Young (Feat. KiD)",artist:"Yenchez",type:"F",producer:"Unknown",links:{"BandLab": "https://www.bandlab.com/post/d31c1c6b-a491-4564-90d7-e8cb098dd171"}},
+{date:"08.03.26",title:"Old School (Holl-a-back time)",artist:"KiD",type:"MS",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/2c20873d-f5c7-4837-bf43-8d3574b3fe03", "SoundCloud": "https://soundcloud.com/thekidiswired/sets/old-school-holl-a-back", "YouTube": "https://youtu.be/LcgEXbKZ1ng"}},
+{date:"18.04.26",title:"Sociopath (Remix) (Feat. KiD)",artist:"Kt007",type:"F",producer:"Dr. Dre",links:{"BandLab": "https://www.bandlab.com/post/9a12af7d-703a-4696-876a-deaee51cb08b"}},
+{date:"08.06.26",title:"99 Raps (Feat. Supreme Assassin & KiD)",artist:"Prince",type:"F",producer:"Timberland",links:{"BandLab": "https://www.bandlab.com/revisions/d90402ce-47a4-44e6-b5fc-74001ab139a8?sharedKey=MC4fcydDnU-zc-1MCmhDcQ"}},
+{date:"11.06.26",title:"Old School (WC26 Stadium Remix)",artist:"KiD",type:"MS",producer:"KiD",links:{"BandLab": "https://www.bandlab.com/post/83d08503-b9c6-469e-8734-e9ea0c5cffa9", "YouTube": "https://youtu.be/TzKTevNlpG0", "SoundCloud": "https://soundcloud.com/thekidiswired/old-school-wc26-stadium-remix"}},
+{date:"18.07.26",title:"Serious Effect (Feat. KiD)",artist:"Yenchez",type:"F",producer:"Unknown",links:{"BandLab": "https://www.bandlab.com/post/637ad3cd-e220-4e0b-88e4-84fa1de4e80c"}},
+{date:"23.07.26",title:"Clap Your Hands",artist:"Prince",type:"P",producer:"KiD",links:{"YouTube": "https://youtu.be/8F-DhE8ALJI"}},
+{date:"16.08.26",title:"Hell Come Down (Feat. KiD & Prince)",artist:"Supreme Assassin",type:"F",producer:"DJ whoo kid",links:{"YouTube": "https://youtu.be/c5wuwXoMT9c", "BandLab": "https://www.bandlab.com/post/de2d7db1f9ce4e2b83aba7c4928769eb_c15a9b16404f4c54a3c6b163e5cd9b60"}},
+{date:"1.9.26 / 31.8.26",title:"COMiNG FOR YOUR SPOT",artist:"KiD",type:"MS",producer:"KiD & Eddie",links:{"DistroKid": "https://distrokid.com/hyperfollow/kid75/coming-for-your-spot?ref=release"}},
+{date:"15.9.26 / 14.9.26",title:"FAST NOW (Feat. boredomboy* & Sona)",artist:"KiD",type:"MS",producer:"KiD",links:{"DistroKid": "https://distrokid.com/hyperfollow/kid75/fast-now-feat-boredomboy?ref=release", "BandLab": "https://www.bandlab.com/thekidsweird/albums/71d6fe7a-6fad-f111-a6a7-002248449175", "YouTube": "https://youtube.com/playlist?list=OLAK5uy_lw7VZ24hNIndodQQ2JTqYhx8tI3e3GFGU", "SoundCloud": "https://soundcloud.com/thekidiswired/sets/coming-for-your-spot-single"}},
+{date:"3.10.26 / 2.10.26",title:"DEFENESTRATiON",artist:"KiD",type:"A",links:{"BandLab": "https://www.bandlab.com/thekidsweird/albums/6f857c29-15cf-f011-8195-6045bd30a4b0", "SoundCloud": "https://soundcloud.com/thekidiswired/sets/defenestration"},tracks:[
 {title:"iNTRO (Skit)",artist:"KiD & KT007",type:"S",producer:"KiD"},
 {title:"CAN'T FiND SHiT (Like Me)",type:"S",producer:"KiD"},
 {title:"COMiNG FOR YOUR SPOT",type:"S",producer:"KiD & Eddie"},
@@ -223,10 +227,10 @@ const entries = [
 {title:"TiME TO THiNK",type:"S",producer:"KiD"},
 {title:"OUTRO",type:"S",producer:"KiD"}
 ]},
-{date:"3.10.26",title:"DEFENESTRATiON (Instrumentals)",artist:"KiD",type:"A"},
-{date:"9.10.26",title:"No Flowers (Feat. KiD)",artist:"boredomboy*",type:"F",producer:"boredomboy*"},
-{date:"14.10.26",title:"My_Trademark",artist:"Pegasus Records",type:"F",producer:"Unknown"},
-{date:"20.11.26",title:"Bring Me In",artist:"UNKN0WN",type:"P",producer:"KiD"}
+{date:"3.10.26",title:"DEFENESTRATiON (Instrumentals)",artist:"KiD",type:"A",links:{"BandLab": "https://www.bandlab.com/thekidsweird/albums/8518ac78-0bc1-f111-bf5b-0022484af400"}},
+{date:"9.10.26",title:"No Flowers (Feat. KiD)",artist:"boredomboy*",type:"F",producer:"boredomboy*",links:{"Apple Music": "https://music.apple.com/gb/album/no-flowers-feat-kid/6818454721?i=6818454787&ls", "Spotify": "https://open.spotify.com/album/3CVGzSuQuhMe20U77W9UTy"}},
+{date:"14.10.26",title:"My_Trademark (feat. KiD, Voor Beta, Direct, Solace, Riverlay, Sethoronni & Giwol)",artist:"Pegasus Records",type:"F",producer:"Unknown",links:{"BandLab": "https://www.bandlab.com/post/82eea2e9-ebef-4445-9d1a-908dbf02d49d"}},
+{date:"20.11.26",title:"Bring Me In",artist:"UNKN0WN",type:"P",producer:"KiD",links:{"YouTube": "https://youtu.be/jqPicuGhsEk"}}
 ];
 const label={F:"FEATURE",P:"I PRODUCED",MS:"MY SHIT",M:"MIXTAPE",A:"ALBUM",S:"SONG ON ALBUM"};
 // Treat case/punctuation and featured-artist suffix differences as the same song title.
