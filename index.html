@@ -270,6 +270,13 @@ function showDetail(e){
  const meta=document.createElement('div');meta.className='detail-meta';
  meta.textContent='DATE: '+e.date+'   /   ARTIST: '+e.artist+'   /   CREDIT: '+(label[e.type]||e.type)+(e.producer?'   /   PROD: '+e.producer:'');
  panel.append(meta);
+ if(e.links&&Object.keys(e.links).length){
+  const links=document.createElement('div');links.className='release-links';
+  Object.entries(e.links).forEach(([platform,url])=>{
+   const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='OPEN '+platform.toUpperCase();links.append(a);
+  });
+  panel.append(links);
+ }
  if(tracks.length){
   const sub=document.createElement('p');sub.textContent='PROJECT TRACKLIST';sub.className='kicker';panel.append(sub);
   const ol=document.createElement('div');ol.className='detail-tracks';
