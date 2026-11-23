@@ -74,6 +74,9 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;display:flex;justify
 .artist-link:hover,.title-link:hover{color:var(--yellow);text-decoration:underline}
 .detail-panel{display:none;border:1px solid var(--red);padding:18px;margin:18px 0;background:#1d1b18}
 .detail-panel.visible{display:block}
+.detail-panel.kid-profile{background:linear-gradient(135deg,#211d17,#171614);border:2px solid var(--yellow);padding:22px}
+.detail-panel.kid-profile .detail-top h2{color:var(--yellow);font-size:30px;letter-spacing:1px}
+.detail-panel.kid-profile .profile-tag{font:10px 'DM Mono',monospace;letter-spacing:2px;color:var(--red);margin:0 0 8px}
 .detail-top{display:flex;justify-content:space-between;gap:12px;align-items:start}
 .detail-close{border:1px solid var(--line);background:none;color:var(--paper);padding:5px 9px;cursor:pointer}
 
@@ -310,13 +313,18 @@ function showDetail(e){
  }
  panel.classList.add('visible');panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
+function canonicalArtistName(value){
+ const name=String(value||'').trim();
+ if(name.toLowerCase()==='kt007')return 'KT007';
+ return name;
+}
 function featuredArtists(text){
  const found=[];
  const re=/(?:feat\.?|ft\.?)\s+([^\)\]]+)/ig;
  let m;
  while((m=re.exec(text))!==null){
   m[1].split(/\s*&\s*|\s*,\s*|\s+and\s+/i).forEach(part=>{
-   const name=part.trim().replace(/[.]+$/,'');
+   const name=canonicalArtistName(part.trim().replace(/[.]+$/,''));
    if(name&&!found.some(x=>x.toLowerCase()===name.toLowerCase()))found.push(name);
   });
  }
@@ -332,20 +340,36 @@ function allFeaturedNames(){
  return names;
 }
 function splitProducerNames(value){
- return String(value||'').split(/\s*&\s*|\s*,\s*/).map(x=>x.trim().replace(/\s*\((?:YT)\)\s*$/i,'').trim()).filter(x=>x&&!/^unknown$/i.test(x));
+ return String(value||'').split(/\s*&\s*|\s*,\s*/).map(x=>canonicalArtistName(x.trim().replace(/\s*\((?:YT)\)\s*$/i,'').trim())).filter(x=>x&&!/^unknown$/i.test(x));
 }
 function creditedArtists(value){
  const text=String(value||'').trim();
  if(/^kid\s*&\s*eddie$/i.test(text))return ['KiD','Eddie'];
  if(/^kid\s*&\s*kt007$/i.test(text))return ['KiD','KT007'];
- return text?[text]:[];
+ return text?[canonicalArtistName(text)]:[];
 }
 function showArtist(name){
- const matches=entries.filter(e=>creditedArtists(e.artist).some(a=>a.toLowerCase()===name.toLowerCase()));
+ const matches=[];
+ entries.forEach(e=>{
+  if(e.tracks){
+   e.tracks.forEach(track=>{
+    const t=typeof track==='string'?{title:track,type:'S'}:track;
+    const credited=creditedArtists(t.artist||e.artist);
+    if(credited.some(a=>a.toLowerCase()===name.toLowerCase()))matches.push({entry:e,title:t.title,track:t});
+   });
+  }else if(creditedArtists(e.artist).some(a=>a.toLowerCase()===name.toLowerCase())){
+   matches.push({entry:e,title:e.title,track:null});
+  }
+ });
  const producedBy=allSongs.filter(e=>splitProducerNames(e.producer).some(a=>a.toLowerCase()===name.toLowerCase()));
+ const isKid=name.toLowerCase()==='kid';
  const featuredOn=[];
  entries.forEach(e=>{
-  if(e.type==='F'&&name.toLowerCase()==='kid')featuredOn.push({entry:e,title:e.title});
+  if(isKid){
+   // KiD's profile lists KiD's own guest appearances on other artists' releases.
+   if(e.type==='F')featuredOn.push({entry:e,title:e.title});
+   return;
+  }
   if(!creditedArtists(e.artist).some(a=>a.toLowerCase()==='kid'))return;
   if(featuredArtists(e.title).some(n=>n.toLowerCase()===name.toLowerCase())){
    featuredOn.push({entry:e,title:e.title});
@@ -361,22 +385,23 @@ function showArtist(name){
  const seenFeatured=new Set();
  featuredOn.forEach(item=>{const key=songKey(item.title);if(!seenFeatured.has(key)){seenFeatured.add(key);uniqueFeatured.push(item)}});
  featuredOn.length=0;featuredOn.push(...uniqueFeatured);
- const panel=document.getElementById('detail-panel');panel.innerHTML='';
+ const panel=document.getElementById('detail-panel');panel.innerHTML='';panel.classList.toggle('kid-profile',isKid);
+ if(isKid){const tag=document.createElement('p');tag.className='profile-tag';tag.textContent='ARTIST · PRODUCER · FOUNDER';panel.append(tag)}
  const top=document.createElement('div');top.className='detail-top';
  const heading=document.createElement('h2');heading.textContent=name;
  const close=document.createElement('button');close.className='detail-close';close.textContent='CLOSE';close.onclick=()=>panel.classList.remove('visible');
  top.append(heading,close);panel.append(top);
- const meta=document.createElement('div');meta.className='detail-meta';meta.textContent=matches.length+' CATALOGUE ENTRIES · '+featuredOn.length+' FEATURES ON KiD RELEASES';panel.append(meta);
+ const meta=document.createElement('div');meta.className='detail-meta';meta.textContent=isKid?(matches.length+' ARTIST CREDITS · '+producedBy.length+' PRODUCTION CREDITS · '+featuredOn.length+' GUEST APPEARANCES'):(matches.length+' CATALOGUE ENTRIES · '+featuredOn.length+' FEATURES ON KiD RELEASES');panel.append(meta);
  if(matches.length){
-  const heading=document.createElement('p');heading.className='kicker';heading.textContent='MY CREDITS WITH THIS ARTIST';panel.append(heading);
-  matches.forEach(e=>{const line=document.createElement('div');line.className='recent-item';const a=document.createElement('button');a.className='title-link';a.textContent=e.title;a.onclick=()=>showDetail(e);const b=document.createElement('span');b.textContent=e.date+' · '+label[e.type];line.append(a,b);panel.append(line)});
+  const heading=document.createElement('p');heading.className='kicker';heading.textContent=isKid?'MY RELEASES & ALBUM APPEARANCES':'MY CREDITS WITH THIS ARTIST';panel.append(heading);
+  matches.forEach(item=>{const e=item.entry;const line=document.createElement('div');line.className='recent-item';const a=document.createElement('button');a.className='title-link';a.textContent=item.title;a.onclick=()=>showDetail(e);const b=document.createElement('span');b.textContent=item.track?e.title+' · '+e.date+' · SONG ON ALBUM':e.date+' · '+label[e.type];line.append(a,b);panel.append(line)});
  }
  if(producedBy.length){
   const heading=document.createElement('p');heading.className='kicker';heading.textContent='PRODUCTION CREDITS';panel.append(heading);
   producedBy.forEach(e=>{const line=document.createElement('div');line.className='recent-item';const a=document.createElement('button');a.className='title-link';a.textContent=e.title;a.onclick=()=>showDetail(e);const b=document.createElement('span');b.textContent=e.date+' · PROD. '+e.producer;line.append(a,b);panel.append(line)});
  }
  if(featuredOn.length){
-  const heading=document.createElement('p');heading.className='kicker';heading.textContent='FEATURES THIS ARTIST HAS DONE FOR KiD';panel.append(heading);
+  const heading=document.createElement('p');heading.className='kicker';heading.textContent=isKid?'FEATURES FOR OTHER ARTISTS':'FEATURES ON KiD RELEASES';panel.append(heading);
   featuredOn.forEach(({entry,title})=>{const line=document.createElement('div');line.className='recent-item';const a=document.createElement('button');a.className='title-link';a.textContent=title;a.onclick=()=>showDetail(entry);const b=document.createElement('span');b.textContent=entry.title===title?entry.date:entry.title+' · '+entry.date;line.append(a,b);panel.append(line)});
  }
  if(!matches.length&&!featuredOn.length&&!producedBy.length){const none=document.createElement('p');none.textContent='No catalogue credits found for this artist yet.';panel.append(none)}
@@ -466,13 +491,20 @@ uniqueSongs(allSongs.filter(e=>isKiDProducer(e.producer))).forEach(e=>{
  const tag=document.createElement('span');tag.className='tag';tag.textContent='PROD. '+e.producer;
  line.append(d,info,tag);production.append(line)
 });
-// Collaboration network: count catalogue appearances per credited collaborator.
+// Collaboration network: count every unique song, including album tracks,
+// and include credited artists and producers on each track.
 const collabCounts=new Map();
-const addCollab=(name)=>{name=String(name||'').trim();if(!name||name.toLowerCase()==='kid')return;collabCounts.set(name,(collabCounts.get(name)||0)+1)};
-entries.forEach(e=>{
- creditedArtists(e.artist).forEach(addCollab);
- featuredArtists(e.title).forEach(addCollab);
- (e.tracks||[]).forEach(t=>{const title=typeof t==='string'?t:t.title;featuredArtists(title||'').forEach(addCollab);if(typeof t!=='string')creditedArtists(t.artist).forEach(addCollab)});
+allSongs.forEach(song=>{
+ const names=new Set([
+  ...creditedArtists(song.artist),
+  ...featuredArtists(song.title),
+  ...splitProducerNames(song.producer)
+ ]);
+ names.forEach(name=>{
+  name=String(name||'').trim();
+  if(!name||name.toLowerCase()==='kid'||/^unknown$/i.test(name))return;
+  collabCounts.set(name,(collabCounts.get(name)||0)+1);
+ });
 });
 const network=document.getElementById('collaboration-network');
 [...collabCounts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).forEach(([name,count])=>{
